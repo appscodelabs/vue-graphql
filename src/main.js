@@ -15,12 +15,12 @@ Vue.config.productionTip = false
 
 const host = document.location.host;
 const serverUrlHttp = host.includes('localhost') ? 'http://localhost:4000/' : 'https://vue-graphql-server.herokuapp.com/';
-const serverUrlWs = host.includes('localhost') ? 'localhost:4000/' : 'vue-graphql-server.herokuapp.com/';
+const serverUrlWs = host.includes('localhost') ? 'ws://localhost:4000/' : 'wss://vue-graphql-server.herokuapp.com/';
 
-const httpLink = new HttpLink({ uri: `${serverUrlHttp}` })
+const httpLink = new HttpLink({ uri: serverUrlHttp })
 
 const wsLink = new WebSocketLink({
-  uri: `ws://${serverUrlWs}`,
+  uri: serverUrlWs,
   options: {
     reconnect: true,
   }
