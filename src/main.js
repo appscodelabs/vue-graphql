@@ -8,14 +8,19 @@ import { ApolloLink, split } from 'apollo-link'
 import { getMainDefinition } from 'apollo-utilities'
 import VueApollo from 'vue-apollo'
 import router from './router'
+import { ServerRequest } from 'http';
 
 // Vue production tip config
 Vue.config.productionTip = false
 
-const httpLink = new HttpLink({ uri: 'http://localhost:4000/' })
+const host = document.location.host;
+const serverUrlHttp = host.includes('localhost') ? 'http://localhost:4000/' : 'https://vue-graphql-server.herokuapp.com/';
+const serverUrlWs = host.includes('localhost') ? 'localhost:4000/' : 'vue-graphql-server.herokuapp.com/';
+
+const httpLink = new HttpLink({ uri: `${serverUrlHttp}` })
 
 const wsLink = new WebSocketLink({
-  uri: `ws://localhost:4000/`,
+  uri: `ws://${serverUrlWs}`,
   options: {
     reconnect: true,
   }
