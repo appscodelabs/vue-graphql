@@ -19,12 +19,29 @@ const serverUrlWs = host.includes('localhost') ? 'ws://localhost:4000/' : 'wss:/
 
 const httpLink = new HttpLink({ uri: serverUrlHttp })
 
+const middlewareLink = new ApolloLink((operation, forward) => {
+  // get the authentication token from local storage if it exists
+  const token = localStorage.getItem(AUTH_TOKEN)
+  // return the headers to the context so httpLink can read them
+  operation.setContext({
+    headers: {
+      Authorization: token ? `Bearer ${token}` : '',
+    }
+  })
+  return forward(operation);
+})
+
+
+// Authentication httplink
+const httpLinkAuth = middlewareLink.concat(httpLink);
+
 const wsLink = new WebSocketLink({
   uri: serverUrlWs,
   options: {
     reconnect: true,
   }
 })
+
 
 const link = split(
   // split based on operation type
@@ -33,7 +50,7 @@ const link = split(
     return kind === 'OperationDefinition' && operation === 'subscription'
   },
   wsLink,
-  httpLink,
+  httpLink
 )
 
 // apollo client setup
@@ -51,10 +68,40 @@ const apolloProvider = new VueApollo({
   defaultClient: client
 })
 
+// get user authentication token saved after login
+let token = localStorage.getItem(AUTH_TOKEN)
+
+router.beforeEach((to, from, next) => {
+  // Look at all routes
+  router.options.routes.forEach((route) => {
+    console.log('>>>>route: ', route);
+    // If this is the current route and it's secure
+    if (to.matched[0].path === route.path && route.secure) {
+      // Verify that the user isn't logged in
+      if (!token || token === '' || token === null) {
+        // Route back to the landing
+        return next('/login');
+      } 
+      if (to.matched[0].path === route.path && route.unAuth) {
+        // Verify that the user isn't logged in
+        if (token) {
+          // Route back to the landing
+          return next('/');
+        }
+      }
+    }
+  })
+  // proceed as normal
+  next();
+});
+
 // Start the app
 new Vue({
   el: '#app',
   provide: apolloProvider.provide(),
   router,
+  data: {
+    token
+  },
   render: h => h(App)
 }).$mount('#app')
