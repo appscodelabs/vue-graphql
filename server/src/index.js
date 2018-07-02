@@ -16,7 +16,7 @@ const resolvers = {
   Mutation: {
     createDraft(parent, { title, text }, ctx, info) {
       return ctx.db.mutation.createPost(
-        { data: { title, text, isPublished: false } },
+        { data: { title, text, isPublished: false, customText: 'test' } },
         info,
       )
     },
@@ -42,7 +42,7 @@ const server = new GraphQLServer({
     ...req,
     db: new Prisma({
       typeDefs: 'src/generated/prisma.graphql',
-      endpoint: 'https://eu1.prisma.sh/public-truthgargoyle-781/my-app-basic/dev',
+      endpoint: 'http://localhost:4466',
       secret: 'mysecret123',
       debug: true,
     }),

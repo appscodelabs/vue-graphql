@@ -1,5 +1,5 @@
 # the endpoint of your service (this also defines the cluster the service will be deployed to)
-endpoint: https://eu1.prisma.sh/public-truthgargoyle-781/my-app-basic/dev
+endpoint: http://localhost:4466 # https://eu1.prisma.sh/public-truthgargoyle-781/my-app-basic/dev
 
 # to disable authentication:
 # disableAuth: true
