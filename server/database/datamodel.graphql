@@ -3,4 +3,5 @@ type Post {
   isPublished: Boolean!
   title: String!
   text: String!
+  customText: String @default(value: "none")
 }
