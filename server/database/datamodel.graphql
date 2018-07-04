@@ -5,7 +5,6 @@ type Post {
   isPublished: Boolean! @default(value: "false")
   title: String!
   text: String!
-  customText: String @default(value: "none")
   author: User!
 }
 

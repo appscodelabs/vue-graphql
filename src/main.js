@@ -2,22 +2,20 @@ import Vue from 'vue'
 import App from './App.vue'
 import { ApolloClient } from 'apollo-client'
 import { HttpLink } from 'apollo-link-http'
+import { setContext } from 'apollo-link-context'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import { WebSocketLink } from 'apollo-link-ws'
 import { ApolloLink, split } from 'apollo-link'
+import { withClientState } from 'apollo-link-state'
 import { getMainDefinition } from 'apollo-utilities'
 import VueApollo from 'vue-apollo'
 import router from './router'
-import { ServerRequest } from 'http';
+import { USER_ID, AUTH_TOKEN } from './constants/'
 
 // Vue production tip config
 Vue.config.productionTip = false
 
-const host = document.location.host;
-const serverUrlHttp = host.includes('localhost') ? 'http://localhost:4000/' : 'https://vue-graphql-server.herokuapp.com/';
-const serverUrlWs = host.includes('localhost') ? 'ws://localhost:4000/' : 'wss://vue-graphql-server.herokuapp.com/';
-
-const httpLink = new HttpLink({ uri: serverUrlHttp })
+const httpLink = new HttpLink({ uri: 'http://localhost:4000/' })
 
 const middlewareLink = new ApolloLink((operation, forward) => {
   // get the authentication token from local storage if it exists
@@ -25,23 +23,24 @@ const middlewareLink = new ApolloLink((operation, forward) => {
   // return the headers to the context so httpLink can read them
   operation.setContext({
     headers: {
-      Authorization: token ? `Bearer ${token}` : '',
+      Authorization: token ? `Bearer ${token}` : "",
     }
   })
-  return forward(operation);
+  return forward(operation)
 })
 
-
-// Authentication httplink
-const httpLinkAuth = middlewareLink.concat(httpLink);
+// Authenticated httplink
+const httpLinkAuth = middlewareLink.concat(httpLink)
 
 const wsLink = new WebSocketLink({
-  uri: serverUrlWs,
+  uri: `ws://localhost:4000/`,
   options: {
     reconnect: true,
+    connectionParams: {
+      Authorization: `Bearer ${localStorage.getItem(AUTH_TOKEN)}`
+    }
   }
 })
-
 
 const link = split(
   // split based on operation type
@@ -50,7 +49,7 @@ const link = split(
     return kind === 'OperationDefinition' && operation === 'subscription'
   },
   wsLink,
-  httpLink
+  httpLinkAuth,
 )
 
 // apollo client setup
@@ -74,24 +73,25 @@ let token = localStorage.getItem(AUTH_TOKEN)
 router.beforeEach((to, from, next) => {
   // Look at all routes
   router.options.routes.forEach((route) => {
-    console.log('>>>>route: ', route);
     // If this is the current route and it's secure
+    console.log('to: ', to);
+    console.log('route: ', route);
     if (to.matched[0].path === route.path && route.secure) {
       // Verify that the user isn't logged in
-      if (!token || token === '' || token === null) {
+      if(!token || token === '' || token === null){
         // Route back to the landing
         return next('/login');
-      } 
-      if (to.matched[0].path === route.path && route.unAuth) {
-        // Verify that the user isn't logged in
-        if (token) {
-          // Route back to the landing
-          return next('/');
-        }
       }
     }
-  })
-  // proceed as normal
+    if (to.matched[0].path === route.path && route.unAuth) {
+      // Verify that the user isn't logged in
+      if(token){
+        // Route back to the landing
+        return next('/');
+      }
+    }
+  });
+  // Proceed as normal
   next();
 });
 

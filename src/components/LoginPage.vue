@@ -46,7 +46,7 @@
 
 <script>
   import gql from 'graphql-tag'
-  import { USER_ID, AUTH_TOKEN  } from '../constants'
+  import { USER_ID, AUTH_TOKEN } from '../constants/'
 
   const LOGIN_USER = gql `
     mutation LoginMutation($email: String!, $password: String!) {
@@ -83,7 +83,7 @@
         }).then((result) => {
           // Result
           console.log(result);
-          const user = result.data.login.user.user
+          const user = result.data.login.user
           const token = result.data.login.token
           this.saveUserData(user, token)
           this.$router.push({ path: '/' })
@@ -95,9 +95,10 @@
       },
 
       saveUserData (user, token) {
-        localStorage.setItem(USER_ID, user)
+        localStorage.setItem(USER_ID, user.id)
+        localStorage.setItem('user-name', user.name)
         localStorage.setItem(AUTH_TOKEN, token)
-        this.$root.$data.token = localStorage.getItem(USER_ID)
+        this.$root.$data.token = localStorage.getItem(AUTH_TOKEN)
       }
     },
 

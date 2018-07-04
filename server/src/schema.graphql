@@ -9,13 +9,13 @@ type Query {
 
 type Mutation {
   signup(email: String!, password: String!, name: String!): AuthPayload!
-  login(email: String!, passwrod: String!): AuthPayload!
-  createDraft(title: String!, text: String): Post!
+  login(email: String!, password: String!): AuthPayload!
+  createDraft(title: String!, text: String!): Post!
   publish(id: ID!): Post!
   deletePost(id: ID!): Post!
 }
 
-type  Subscription {
+type Subscription {
   feedSubscription: PostSubscriptionPayload!
 }
 

@@ -1,2 +1,7 @@
-export const USER_ID = 'user-id';
-export const AUTH_TOKEN = 'token';
+const USER_ID = 'user-id';
+const AUTH_TOKEN = 'token';
+
+module.exports = {
+  USER_ID,
+  AUTH_TOKEN,
+};

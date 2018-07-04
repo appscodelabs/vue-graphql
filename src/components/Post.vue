@@ -8,6 +8,7 @@
             <p class="f6 f5-l lh-copy">
               {{ post.text }}
             </p>
+            <p class="f6 lh-copy mv0">By {{ post.author.name }}</p>
           </div>
         </div>
       </a>
@@ -31,5 +32,9 @@
   }
 </script>
 <style>
-
+/* Add some padding inside the card container */
+.container {
+    padding: 2px 16px;
+    margin:10px;
+}
 </style>

@@ -2,9 +2,9 @@
   <div class="feed">
 
     <template v-if="loading > 0">
-        <div className="flex w-100 h-100 items-center justify-center pt7">
-          <div>Loading...</div>
-        </div>
+      <div className="flex w-100 h-100 items-center justify-center pt7">
+        <div>Loading...</div>
+      </div>
     </template>
 
     <template v-else>
@@ -20,13 +20,13 @@
 </template>
 
 <style>
-  
+
 </style>
 
 <script>
   import gql from 'graphql-tag'
   import Post from './Post.vue'
-
+  
   // GraphQL query
   const FEED_QUERY = gql `
     query feed {
@@ -35,10 +35,13 @@
         text
         title
         isPublished
+        author{
+          name
+        }
       }
     }
   `
-
+  
   // Component def
   export default {
     // Local state

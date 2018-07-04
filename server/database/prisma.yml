@@ -1,9 +1,9 @@
 # the endpoint of your service (this also defines the cluster the service will be deployed to)
-endpoint: http://localhost:4466 # https://eu1.prisma.sh/public-truthgargoyle-781/my-app-basic/dev
+endpoint: "http://localhost:4466" # ${env:PRISMA_ENDPOINT}
 
 # to disable authentication:
 # disableAuth: true
-secret: mysecret123
+secret: "mysecret123" # ${env:PRISMA_SECRET}
 
 # the file path pointing to your data model
 datamodel: datamodel.graphql
