@@ -14,8 +14,6 @@ const Query = {
         id
       }
     }
-    console.log('args: ', args);
-    console.log('info: ', info);
     return ctx.db.query.posts({ where }, info)
   },
 
