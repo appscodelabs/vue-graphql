@@ -56,6 +56,25 @@ yarn start
 
 > **Note**: We recommend that you're using `yarn dev` during development as it will give you access to the GraphQL API or your server (defined by the [application schema](./src/schema.graphql)) as well as to the Prisma API directly (defined by the [Prisma database schema](./generated/prisma.graphql)). If you're starting the server with `yarn start`, you'll only be able to access the API of the application schema.
 
+### Use Custom Database (e.g. PostgreSQL)
+
+1. Go into `server/database/` directory
+
+    ```
+    cd server/database
+    ```
+2. Run `docker-compose.yml`
+
+    ```
+    docker-compose up -d
+
+    # it will run two container using `prismagraphql/prisma:1.8` & `postgres` images.
+    ```
+
+3. docker ps
+
+    ![](static/images/docker-ps.png)
+
 ### Server structure
 
 ![](https://imgur.com/95faUsa.png)
